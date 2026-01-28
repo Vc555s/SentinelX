@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SentinelX SafeCity - Portal Selection</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 50%, #0f0f23 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #fff;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .logo {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin-bottom: 2.5rem;
+    }
+
+    .portal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .portal-card {
+      background: rgba(30, 41, 59, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .portal-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent-start), var(--accent-end));
+    }
+
+    .portal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .portal-card.admin {
+      --accent-start: #ef4444;
+      --accent-end: #f97316;
+    }
+
+    .portal-card.user {
+      --accent-start: #3b82f6;
+      --accent-end: #06b6d4;
+    }
+
+    .portal-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.25rem;
+      font-size: 2rem;
+    }
+
+    .portal-card.admin .portal-icon {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(249, 115, 22, 0.2));
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .portal-card.user .portal-icon {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2));
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    .portal-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .portal-description {
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    .portal-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      border: none;
+      cursor: pointer;
+      color: white;
+    }
+
+    .portal-card.admin .portal-btn {
+      background: linear-gradient(135deg, #ef4444, #f97316);
+    }
+
+    .portal-card.user .portal-btn {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+    }
+
+    .footer {
+      margin-top: 2.5rem;
+      color: #64748b;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="logo">🛡️ SentinelX</h1>
+    <p class="subtitle">SafeCity Crime Mapping & Predictive Policing Platform</p>
+
+    <div class="portal-grid">
+      <a href="http://localhost:8081" class="portal-card admin">
+        <div class="portal-icon">👮</div>
+        <h2 class="portal-title">Admin Portal</h2>
+        <p class="portal-description">For Police Officers & Government Officials</p>
+        <button class="portal-btn" onclick="window.location.href='http://localhost:8081'">
+          Enter Admin Portal →
+        </button>
+      </a>
+
+      <a href="http://localhost:8080" class="portal-card user">
+        <div class="portal-icon">👤</div>
+        <h2 class="portal-title">Citizen Portal</h2>
+        <p class="portal-description">For Citizens & Community Members</p>
+        <button class="portal-btn" onclick="window.location.href='http://localhost:8080'">
+          Enter Citizen Portal →
+        </button>
+      </a>
+    </div>
+
+    <p class="footer">Mumbai Crime Analytics Platform • Built for a Safer City</p>
+  </div>
+</body>
+
+</html>
