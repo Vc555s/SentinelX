@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertTriangle,
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { ActivityFeed } from '@/components/dashboard/ActivityFeed';
+import { AlertFeed } from '@/components/dashboard/AlertFeed';
 import { MiniMap } from '@/components/dashboard/MiniMap';
 import { CrimeChart } from '@/components/dashboard/CrimeChart';
 import { useDashboardStats } from '@/hooks/useApi';
@@ -15,6 +17,11 @@ import { Button } from '@/components/ui/button';
 
 export default function Dashboard() {
   const { data: stats, isLoading } = useDashboardStats();
+  const [focusPos, setFocusPos] = useState<[number, number] | undefined>();
+
+  const handleViewOnMap = (coordinates: [number, number]) => {
+    setFocusPos(coordinates);
+  };
 
   return (
     <div className="min-h-screen p-6 space-y-6">
@@ -94,8 +101,8 @@ export default function Dashboard() {
         {/* Left Column - Chart and Map */}
         <div className="lg:col-span-2 space-y-6">
           {/* Mini Map */}
-          <div className="h-[300px]">
-            <MiniMap />
+          <div className="h-[450px]">
+            <MiniMap focusPos={focusPos} />
           </div>
 
           {/* Crime Trend Chart */}
@@ -104,11 +111,18 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Right Column - Activity Feed */}
-        <div className="h-[640px]">
-          <ActivityFeed />
+        {/* Right Column - Alert Feed and Activity Feed */}
+        <div className="space-y-4">
+          {/* SOS / Live Alerts */}
+          <AlertFeed onViewOnMap={handleViewOnMap} />
+
+          {/* Activity Feed */}
+          <div className="h-[280px]">
+            <ActivityFeed />
+          </div>
         </div>
       </div>
     </div>
   );
 }
+

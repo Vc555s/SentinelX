@@ -143,11 +143,11 @@ export function CrimeMap() {
         type: 'FeatureCollection' as const,
         features: hotspots.map(h => ({
           type: 'Feature' as const,
-          geometry: { type: 'Point' as const, coordinates: [h.centroid.lon, h.centroid.lat] },
+          geometry: { type: 'Point' as const, coordinates: [h.longitude, h.latitude] },
           properties: {
-            cluster_id: h.cluster_id,
             risk_level: h.risk_level,
-            intensity: h.intensity,
+            intensity: h.risk_score * 100,
+            crime_type: h.predicted_crime_type,
             color: riskColors[h.risk_level] || '#6b7280'
           }
         }))
@@ -159,10 +159,10 @@ export function CrimeMap() {
         type: 'circle',
         source: 'hotspots',
         paint: {
-          'circle-radius': ['interpolate', ['linear'], ['get', 'intensity'], 0, 20, 100, 50],
+          'circle-radius': ['interpolate', ['linear'], ['get', 'intensity'], 0, 15, 100, 40],
           'circle-color': ['get', 'color'],
-          'circle-opacity': 0.3,
-          'circle-stroke-width': 2,
+          'circle-opacity': 0.4,
+          'circle-stroke-width': 1.5,
           'circle-stroke-color': ['get', 'color'],
           'circle-stroke-opacity': 0.8
         }

@@ -45,6 +45,6 @@ export const useDashboardStats = () => {
   return useQuery({
     queryKey: ['dashboardStats'],
     queryFn: api.getDashboardStats,
-    refetchInterval: 30000,
+    refetchInterval: 10000, // Refresh every 10 seconds for real-time updates
   });
 };

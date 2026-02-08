@@ -22,6 +22,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { LanguageSelector } from '@/components/LanguageSelector';
 
 interface NavItem {
   icon: React.ElementType;
@@ -34,6 +35,7 @@ const navItems: NavItem[] = [
   { icon: Map, label: 'Live Map', path: '/map' },
   { icon: AlertTriangle, label: 'Report Crime', path: '/report' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
+  { icon: Shield, label: 'Predictive Policing', path: '/predictions' },
   { icon: Users, label: 'Patrol Management', path: '/patrols' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
@@ -141,9 +143,10 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Theme Toggle & User Section */}
+      {/* Theme Toggle & Language Selector */}
       <div className="p-3 border-t border-sidebar-border space-y-3">
-        <div className={cn('flex', isCollapsed ? 'justify-center' : 'justify-end')}>
+        <div className={cn('flex gap-2', isCollapsed ? 'justify-center' : 'justify-end')}>
+          <LanguageSelector />
           <ThemeToggle />
         </div>
         <div

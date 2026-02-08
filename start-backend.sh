@@ -13,4 +13,14 @@ elif [ -f "venv/bin/activate" ]; then
 fi
 
 echo "Starting backend on port 8000..."
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+uvicorn app.main:app --host 0.0.0.0 --port 8000 &
+BACKEND_PID=$!
+
+sleep 2
+
+echo "Starting Telegram bot poller..."
+python telegram_poller.py &
+POLLER_PID=$!
+
+# Wait for either to exit
+wait $BACKEND_PID $POLLER_PID

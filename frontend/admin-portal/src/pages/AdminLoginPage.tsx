@@ -1,14 +1,25 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Send, ArrowRight, CheckCircle, Smartphone } from 'lucide-react';
+import { Shield, Send, ArrowRight, CheckCircle, Smartphone, User, Phone } from 'lucide-react';
 import { useAdminAuth } from '@/contexts/AdminAuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+// Country codes for common regions
+const countryCodes = [
+    { code: '+91', country: 'India', flag: '🇮🇳' },
+    { code: '+1', country: 'USA', flag: '🇺🇸' },
+    { code: '+44', country: 'UK', flag: '🇬🇧' },
+    { code: '+971', country: 'UAE', flag: '🇦🇪' },
+];
+
 export default function AdminLoginPage() {
     const { requestOTP, verifyOTP, isLoading } = useAdminAuth();
-    const [step, setStep] = useState<'username' | 'otp'>('username');
+    const [step, setStep] = useState<'credentials' | 'otp'>('credentials');
+    const [loginMethod, setLoginMethod] = useState<'username' | 'phone'>('username');
     const [telegramUsername, setTelegramUsername] = useState('');
+    const [countryCode, setCountryCode] = useState('+91');
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [otp, setOtp] = useState('');
     const [message, setMessage] = useState('');
     const [demoHint, setDemoHint] = useState('');
@@ -17,12 +28,14 @@ export default function AdminLoginPage() {
 
     const handleRequestOTP = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!telegramUsername.trim()) return;
-
         setIsSubmitting(true);
         setError('');
 
-        const result = await requestOTP(telegramUsername);
+        const payload = loginMethod === 'username'
+            ? { telegram_username: telegramUsername }
+            : { phone_number: countryCode + phoneNumber };
+
+        const result = await requestOTP(payload);
 
         if (result.success) {
             setMessage(result.message);
@@ -42,7 +55,11 @@ export default function AdminLoginPage() {
         setIsSubmitting(true);
         setError('');
 
-        const result = await verifyOTP(telegramUsername, otp);
+        const payload = loginMethod === 'username'
+            ? { telegram_username: telegramUsername, otp }
+            : { phone_number: countryCode + phoneNumber, otp };
+
+        const result = await verifyOTP(payload);
 
         if (!result.success) {
             setError(result.message);
@@ -91,9 +108,9 @@ export default function AdminLoginPage() {
                     className="bg-slate-800/50 backdrop-blur-xl border border-slate-700 rounded-2xl p-8"
                 >
                     <AnimatePresence mode="wait">
-                        {step === 'username' ? (
+                        {step === 'credentials' ? (
                             <motion.form
-                                key="username"
+                                key="credentials"
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
@@ -106,26 +123,82 @@ export default function AdminLoginPage() {
                                         Telegram Login
                                     </h2>
                                     <p className="text-slate-400 text-sm">
-                                        Enter your registered Telegram username to receive a one-time password.
+                                        Sign in with your Telegram username or phone number
                                     </p>
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-slate-300 mb-2">
-                                        Telegram Username
-                                    </label>
-                                    <div className="relative">
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">@</span>
-                                        <Input
-                                            type="text"
-                                            value={telegramUsername}
-                                            onChange={(e) => setTelegramUsername(e.target.value)}
-                                            placeholder="your_username"
-                                            className="pl-8 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
-                                            required
-                                        />
-                                    </div>
+                                {/* Toggle between username and phone */}
+                                <div className="flex gap-2 p-1 bg-slate-700/50 rounded-lg">
+                                    <button
+                                        type="button"
+                                        onClick={() => setLoginMethod('username')}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${loginMethod === 'username'
+                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
+                                                : 'text-slate-400 hover:text-white'
+                                            }`}
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Username
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setLoginMethod('phone')}
+                                        className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-md text-sm font-medium transition-all ${loginMethod === 'phone'
+                                                ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white'
+                                                : 'text-slate-400 hover:text-white'
+                                            }`}
+                                    >
+                                        <Phone className="w-4 h-4" />
+                                        Phone
+                                    </button>
                                 </div>
+
+                                {loginMethod === 'username' ? (
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                                            Telegram Username
+                                        </label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">@</span>
+                                            <Input
+                                                type="text"
+                                                value={telegramUsername}
+                                                onChange={(e) => setTelegramUsername(e.target.value)}
+                                                placeholder="your_username"
+                                                className="pl-8 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <label className="block text-sm font-medium text-slate-300 mb-2">
+                                            Phone Number
+                                        </label>
+                                        <div className="flex gap-2">
+                                            <select
+                                                value={countryCode}
+                                                onChange={(e) => setCountryCode(e.target.value)}
+                                                className="w-28 bg-slate-700/50 border border-slate-600 rounded-md text-white px-2 py-2 text-sm"
+                                            >
+                                                {countryCodes.map((c) => (
+                                                    <option key={c.code} value={c.code}>
+                                                        {c.flag} {c.code}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <Input
+                                                type="tel"
+                                                value={phoneNumber}
+                                                onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ''))}
+                                                placeholder="9876543210"
+                                                className="flex-1 bg-slate-700/50 border-slate-600 text-white placeholder:text-slate-500"
+                                                maxLength={10}
+                                                required
+                                            />
+                                        </div>
+                                    </div>
+                                )}
 
                                 {error && (
                                     <p className="text-red-400 text-sm text-center">{error}</p>
@@ -133,7 +206,7 @@ export default function AdminLoginPage() {
 
                                 <Button
                                     type="submit"
-                                    disabled={isSubmitting || !telegramUsername.trim()}
+                                    disabled={isSubmitting || (loginMethod === 'username' ? !telegramUsername.trim() : !phoneNumber.trim())}
                                     className="w-full bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600"
                                 >
                                     {isSubmitting ? (
@@ -160,11 +233,9 @@ export default function AdminLoginPage() {
                                     <h2 className="text-xl font-semibold text-white mb-2">
                                         Enter OTP
                                     </h2>
-                                    <p className="text-slate-400 text-sm">
-                                        {message}
-                                    </p>
+                                    <p className="text-slate-400 text-sm">{message}</p>
                                     {demoHint && (
-                                        <p className="text-yellow-400 text-xs mt-2 font-mono">
+                                        <p className="text-yellow-400 text-xs mt-2 font-mono bg-yellow-400/10 py-2 px-3 rounded-lg">
                                             {demoHint}
                                         </p>
                                     )}
@@ -206,17 +277,16 @@ export default function AdminLoginPage() {
 
                                 <button
                                     type="button"
-                                    onClick={() => { setStep('username'); setOtp(''); setError(''); }}
+                                    onClick={() => { setStep('credentials'); setOtp(''); setError(''); }}
                                     className="w-full text-slate-400 hover:text-white text-sm"
                                 >
-                                    ← Back to username
+                                    ← Back
                                 </button>
                             </motion.form>
                         )}
                     </AnimatePresence>
                 </motion.div>
 
-                {/* Security Note */}
                 <motion.p
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}

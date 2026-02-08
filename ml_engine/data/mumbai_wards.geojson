@@ -1,0 +1,365 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8478,
+          19.0419
+        ]
+      },
+      "properties": {
+        "ward_id": "G/N",
+        "name": "Dharavi-Mahim-Dadar",
+        "risk_weight": 1.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8838,
+          19.0651
+        ]
+      },
+      "properties": {
+        "ward_id": "L",
+        "name": "Kurla-Sakinaka",
+        "risk_weight": 1.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.9176,
+          19.0466
+        ]
+      },
+      "properties": {
+        "ward_id": "M/E",
+        "name": "Mankhurd-Deonar",
+        "risk_weight": 1.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8982,
+          19.0522
+        ]
+      },
+      "properties": {
+        "ward_id": "M/W",
+        "name": "Chembur",
+        "risk_weight": 1.2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8383,
+          18.9795
+        ]
+      },
+      "properties": {
+        "ward_id": "E",
+        "name": "Byculla-Nagpada",
+        "risk_weight": 1.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8581,
+          19.0232
+        ]
+      },
+      "properties": {
+        "ward_id": "F/N",
+        "name": "Matunga-Sion-Wadala",
+        "risk_weight": 1.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.9082,
+          19.0796
+        ]
+      },
+      "properties": {
+        "ward_id": "N",
+        "name": "Ghatkopar-Vidyavihar",
+        "risk_weight": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8465,
+          19.1197
+        ]
+      },
+      "properties": {
+        "ward_id": "K/E",
+        "name": "Andheri-East",
+        "risk_weight": 1.1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8361,
+          19.1285
+        ]
+      },
+      "properties": {
+        "ward_id": "K/W",
+        "name": "Andheri-West",
+        "risk_weight": 0.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8479,
+          19.0596
+        ]
+      },
+      "properties": {
+        "ward_id": "H/E",
+        "name": "Bandra-East",
+        "risk_weight": 0.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8267,
+          19.0544
+        ]
+      },
+      "properties": {
+        "ward_id": "H/W",
+        "name": "Bandra-West",
+        "risk_weight": 0.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.9109,
+          19.1177
+        ]
+      },
+      "properties": {
+        "ward_id": "S",
+        "name": "Powai-Vikhroli",
+        "risk_weight": 0.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8484,
+          19.1874
+        ]
+      },
+      "properties": {
+        "ward_id": "P/N",
+        "name": "Malad",
+        "risk_weight": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8495,
+          19.1556
+        ]
+      },
+      "properties": {
+        "ward_id": "P/S",
+        "name": "Goregaon",
+        "risk_weight": 0.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8567,
+          19.2307
+        ]
+      },
+      "properties": {
+        "ward_id": "R/C",
+        "name": "Borivali",
+        "risk_weight": 0.8
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8613,
+          19.259
+        ]
+      },
+      "properties": {
+        "ward_id": "R/N",
+        "name": "Dahisar",
+        "risk_weight": 0.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8522,
+          19.2052
+        ]
+      },
+      "properties": {
+        "ward_id": "R/S",
+        "name": "Kandivali",
+        "risk_weight": 0.9
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.9561,
+          19.1726
+        ]
+      },
+      "properties": {
+        "ward_id": "T",
+        "name": "Mulund",
+        "risk_weight": 0.7
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8347,
+          18.922
+        ]
+      },
+      "properties": {
+        "ward_id": "A",
+        "name": "Colaba-Churchgate",
+        "risk_weight": 0.6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8347,
+          18.9586
+        ]
+      },
+      "properties": {
+        "ward_id": "B",
+        "name": "Dongri-Bhendi-Bazar",
+        "risk_weight": 1.3
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.831,
+          18.952
+        ]
+      },
+      "properties": {
+        "ward_id": "C",
+        "name": "Pydhonie-Bhuleshwar",
+        "risk_weight": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.7975,
+          18.9551
+        ]
+      },
+      "properties": {
+        "ward_id": "D",
+        "name": "Malabar-Hill",
+        "risk_weight": 0.5
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8428,
+          19.0073
+        ]
+      },
+      "properties": {
+        "ward_id": "F/S",
+        "name": "Parel",
+        "risk_weight": 1.0
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8152,
+          19.0166
+        ]
+      },
+      "properties": {
+        "ward_id": "G/S",
+        "name": "Worli-Prabhadevi",
+        "risk_weight": 0.8
+      }
+    }
+  ]
+}

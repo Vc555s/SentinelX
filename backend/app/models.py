@@ -22,7 +22,8 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)  # Telegram username
+    username = Column(String, unique=True, index=True, nullable=True)  # Telegram username
+    phone_number = Column(String, unique=True, index=True, nullable=True)  # With country code e.g. +919876543210
     email = Column(String, unique=True, index=True, nullable=True)
     hashed_password = Column(String, nullable=True)  # Optional - we use Telegram OTP
     full_name = Column(String)

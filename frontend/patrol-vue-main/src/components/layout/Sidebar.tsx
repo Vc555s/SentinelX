@@ -20,6 +20,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { LanguageSelector } from '@/components/LanguageSelector';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface NavItem {
@@ -139,9 +140,10 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Theme Toggle & User Section */}
+      {/* Theme Toggle, Language Selector & User Section */}
       <div className="p-3 border-t border-sidebar-border space-y-3">
-        <div className={cn('flex', isCollapsed ? 'justify-center' : 'justify-end')}>
+        <div className={cn('flex gap-2', isCollapsed ? 'justify-center' : 'justify-end')}>
+          <LanguageSelector />
           <ThemeToggle />
         </div>
 

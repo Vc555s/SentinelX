@@ -4,17 +4,29 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 interface AdminUser {
     id: number;
-    username: string;
+    username: string | null;
+    phone_number: string | null;
     full_name: string;
-    email: string;
+    email: string | null;
+}
+
+interface OTPRequestPayload {
+    telegram_username?: string;
+    phone_number?: string;
+}
+
+interface OTPVerifyPayload {
+    telegram_username?: string;
+    phone_number?: string;
+    otp: string;
 }
 
 interface AdminAuthContextType {
     admin: AdminUser | null;
     isLoading: boolean;
     isAuthenticated: boolean;
-    requestOTP: (telegramUsername: string) => Promise<{ success: boolean; message: string; demo_hint?: string }>;
-    verifyOTP: (telegramUsername: string, otp: string) => Promise<{ success: boolean; message: string }>;
+    requestOTP: (payload: OTPRequestPayload) => Promise<{ success: boolean; message: string; demo_hint?: string }>;
+    verifyOTP: (payload: OTPVerifyPayload) => Promise<{ success: boolean; message: string }>;
     logout: () => void;
 }
 
@@ -50,12 +62,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const requestOTP = async (telegramUsername: string) => {
+    const requestOTP = async (payload: OTPRequestPayload) => {
         try {
             const response = await fetch(`${API_URL}/auth/admin/request-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_username: telegramUsername })
+                body: JSON.stringify(payload)
             });
             const data = await response.json();
             return { success: true, message: data.message, demo_hint: data.demo_hint };
@@ -64,12 +76,12 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         }
     };
 
-    const verifyOTP = async (telegramUsername: string, otp: string) => {
+    const verifyOTP = async (payload: OTPVerifyPayload) => {
         try {
             const response = await fetch(`${API_URL}/auth/admin/verify-otp`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_username: telegramUsername, otp })
+                body: JSON.stringify(payload)
             });
 
             if (response.ok) {

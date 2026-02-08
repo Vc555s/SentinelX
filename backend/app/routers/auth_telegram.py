@@ -32,19 +32,44 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8  # 8 hours for admin
 
 
 class OTPRequest(BaseModel):
-    telegram_username: str
+    telegram_username: Optional[str] = None
+    phone_number: Optional[str] = None  # With country code e.g. +919876543210
+    
+    def get_identifier(self) -> tuple:
+        """Returns (field_name, value) for lookup"""
+        if self.telegram_username:
+            return ("username", self.telegram_username.lower().strip().lstrip('@'))
+        elif self.phone_number:
+            # Normalize phone number - remove spaces and ensure + prefix
+            phone = self.phone_number.strip().replace(" ", "").replace("-", "")
+            if not phone.startswith("+"):
+                phone = "+" + phone
+            return ("phone", phone)
+        return (None, None)
 
 
 class OTPVerify(BaseModel):
-    telegram_username: str
+    telegram_username: Optional[str] = None
+    phone_number: Optional[str] = None
     otp: str
+    
+    def get_identifier(self) -> str:
+        """Returns normalized identifier for OTP lookup"""
+        if self.telegram_username:
+            return self.telegram_username.lower().strip().lstrip('@')
+        elif self.phone_number:
+            phone = self.phone_number.strip().replace(" ", "").replace("-", "")
+            if not phone.startswith("+"):
+                phone = "+" + phone
+            return phone
+        return ""
 
 
 class AdminUser(BaseModel):
     id: int
-    telegram_username: str
+    telegram_username: Optional[str] = None
+    phone_number: Optional[str] = None
     full_name: str
-    badge_number: str
     role: str
 
 
@@ -94,52 +119,46 @@ async def request_otp(
     request: OTPRequest,
     db: AsyncSession = Depends(get_db)
 ):
-    """
-    Request OTP for admin login.
-    Sends OTP to admin's registered Telegram account.
-    """
-    telegram_username = request.telegram_username.lower().strip().lstrip('@')
+    """Request OTP for admin login. Supports username OR phone number."""
+    field_type, identifier = request.get_identifier()
+    
+    if not identifier:
+        raise HTTPException(status_code=400, detail="Please provide username or phone number")
     
     # Check if admin exists
-    result = await db.execute(
-        select(User).where(
-            User.username == telegram_username,
-            User.is_active == True
+    if field_type == "username":
+        result = await db.execute(
+            select(User).where(User.username == identifier, User.is_active == True)
         )
-    )
+    else:
+        result = await db.execute(
+            select(User).where(User.phone_number == identifier, User.is_active == True)
+        )
+    
     admin = result.scalars().first()
     
     if not admin:
-        # Don't reveal if user exists or not
         return {"message": "If you're a registered admin, you'll receive an OTP on Telegram."}
     
-    # Generate OTP
     otp = generate_otp()
     expiry = datetime.utcnow() + timedelta(minutes=5)
     
-    # Store OTP
-    otp_store[telegram_username] = {
-        "otp": otp,
-        "expiry": expiry,
-        "attempts": 0
-    }
+    otp_store[identifier] = {"otp": otp, "expiry": expiry, "attempts": 0}
     
-    # For demo: Print OTP since we don't have a Telegram bot configured
-    # In production, send via Telegram bot
     telegram_bot_token = getattr(settings, 'TELEGRAM_BOT_TOKEN', None)
     telegram_chat_id = getattr(admin, 'telegram_chat_id', None)
+    display_id = identifier if field_type == "username" else f"phone:{identifier}"
     
     if telegram_bot_token and telegram_chat_id:
-        sent = await send_telegram_otp(telegram_bot_token, telegram_chat_id, otp, telegram_username)
+        sent = await send_telegram_otp(telegram_bot_token, telegram_chat_id, otp, display_id)
         if not sent:
-            print(f"[DEMO MODE] OTP for {telegram_username}: {otp}")
+            print(f"[DEMO] OTP for {display_id}: {otp}")
     else:
-        # Demo mode - print to console
-        print(f"[DEMO MODE] OTP for {telegram_username}: {otp}")
+        print(f"[DEMO] OTP for {display_id}: {otp}")
     
     return {
         "message": "If you're a registered admin, you'll receive an OTP on Telegram.",
-        "demo_hint": f"Check console for OTP (demo mode). OTP: {otp}" if not telegram_bot_token else None
+        "demo_hint": f"OTP: {otp}" if not telegram_bot_token else None
     }
 
 
@@ -149,44 +168,43 @@ async def verify_otp(
     db: AsyncSession = Depends(get_db)
 ):
     """Verify OTP and return JWT token for admin."""
-    telegram_username = request.telegram_username.lower().strip().lstrip('@')
+    identifier = request.get_identifier()
     
-    # Check stored OTP
-    stored = otp_store.get(telegram_username)
+    if not identifier:
+        raise HTTPException(status_code=400, detail="Please provide username or phone number")
+    
+    stored = otp_store.get(identifier)
     
     if not stored:
         raise HTTPException(status_code=400, detail="No OTP requested or OTP expired")
     
-    # Check expiry
     if datetime.utcnow() > stored["expiry"]:
-        del otp_store[telegram_username]
+        del otp_store[identifier]
         raise HTTPException(status_code=400, detail="OTP expired. Please request a new one.")
     
-    # Check attempts
     if stored["attempts"] >= 3:
-        del otp_store[telegram_username]
+        del otp_store[identifier]
         raise HTTPException(status_code=400, detail="Too many attempts. Please request a new OTP.")
     
-    # Verify OTP
     if request.otp != stored["otp"]:
-        otp_store[telegram_username]["attempts"] += 1
+        otp_store[identifier]["attempts"] += 1
         raise HTTPException(status_code=400, detail="Invalid OTP")
     
-    # Get admin user
-    result = await db.execute(
-        select(User).where(User.username == telegram_username)
-    )
+    # Get admin user by username or phone
+    if request.telegram_username:
+        result = await db.execute(select(User).where(User.username == identifier))
+    else:
+        result = await db.execute(select(User).where(User.phone_number == identifier))
+    
     admin = result.scalars().first()
     
     if not admin:
         raise HTTPException(status_code=404, detail="Admin not found")
     
-    # Clear OTP
-    del otp_store[telegram_username]
+    del otp_store[identifier]
     
-    # Create JWT token
     token = create_admin_token({
-        "sub": admin.username,
+        "sub": admin.username or admin.phone_number,
         "user_id": admin.id,
         "role": "admin"
     })
@@ -197,6 +215,7 @@ async def verify_otp(
         "admin": {
             "id": admin.id,
             "username": admin.username,
+            "phone_number": admin.phone_number,
             "full_name": admin.full_name,
             "email": admin.email
         }

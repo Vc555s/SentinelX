@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="shield-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6"/>
+      <stop offset="100%" style="stop-color:#1d4ed8"/>
+    </linearGradient>
+  </defs>
+  <!-- Shield shape -->
+  <path d="M16 2 L28 6 L28 14 C28 22 22 28 16 30 C10 28 4 22 4 14 L4 6 Z" fill="url(#shield-gradient)" stroke="#1e40af" stroke-width="1"/>
+  <!-- Inner highlight -->
+  <path d="M16 5 L25 8 L25 14 C25 20 20 25 16 27 C12 25 7 20 7 14 L7 8 Z" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/>
+  <!-- X mark for SentinelX -->
+  <path d="M11 12 L21 22 M21 12 L11 22" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

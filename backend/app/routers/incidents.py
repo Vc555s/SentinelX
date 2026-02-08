@@ -166,3 +166,64 @@ async def read_public_incidents(
     result = await db.execute(select(models.CrimeIncident).offset(skip).limit(limit))
     incidents = result.scalars().all()
     return incidents
+
+
+@router.get("/live-alerts")
+async def get_live_alerts(
+    hours: int = 24,
+    db: AsyncSession = Depends(database.get_db)
+):
+    """
+    Get recent incidents for live alert display (public endpoint).
+    Returns incidents from the last N hours with location names.
+    """
+    from datetime import timedelta
+    from sqlalchemy import desc
+    
+    cutoff_time = datetime.now() - timedelta(hours=hours)
+    
+    result = await db.execute(
+        select(models.CrimeIncident)
+        .where(models.CrimeIncident.incident_time >= cutoff_time)
+        .order_by(desc(models.CrimeIncident.incident_time))
+        .limit(50)
+    )
+    incidents = result.scalars().all()
+    
+    # Format for live alerts
+    alerts = []
+    for inc in incidents:
+        location_name = inc.location_name
+        # If location_name is coordinates, try to get readable name
+        if not location_name or location_name.startswith('19.') or location_name.startswith('18.'):
+            from ..utils.geocoder import _find_nearest_locality
+            location_name = _find_nearest_locality(inc.latitude, inc.longitude)
+        
+        alerts.append({
+            "id": str(inc.id),
+            "fir_id": inc.fir_id,
+            "crime_type": inc.crime_type,
+            "description": inc.description or "",
+            "latitude": inc.latitude,
+            "longitude": inc.longitude,
+            "location_name": location_name,
+            "incident_time": inc.incident_time.isoformat() if inc.incident_time else None,
+            "status": inc.status,
+            "severity": _get_severity(inc.crime_type)
+        })
+    
+    return alerts
+
+
+def _get_severity(crime_type: str) -> str:
+    """Map crime type to severity level."""
+    high_severity = ['murder', 'rape', 'kidnapping', 'robbery', 'riots']
+    medium_severity = ['assault', 'molestation', 'burglary', 'hurt']
+    
+    crime_lower = crime_type.lower()
+    if any(c in crime_lower for c in high_severity):
+        return 'critical'
+    if any(c in crime_lower for c in medium_severity):
+        return 'high'
+    return 'medium'
+

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, auth_google, auth_telegram, telegram_bot, incidents, analytics, patrols, dashboard, predictions
+from .routers import auth, auth_google, auth_telegram, telegram_bot, incidents, analytics, patrols, dashboard, predictions, sos
 from .database import engine, Base
 
 app = FastAPI(
@@ -32,6 +32,7 @@ app.include_router(analytics.router)
 app.include_router(patrols.router)
 app.include_router(dashboard.router)
 app.include_router(predictions.router)
+app.include_router(sos.router)
 
 @app.get("/")
 async def root():

@@ -11,6 +11,7 @@ import Analytics from "@/pages/Analytics";
 import Patrols from "@/pages/Patrols";
 import Settings from "@/pages/Settings";
 import ReportCrime from "@/pages/ReportCrime";
+import Predictions from "@/pages/Predictions";
 import AdminLoginPage from "@/pages/AdminLoginPage";
 import NotFound from "@/pages/NotFound";
 
@@ -39,6 +40,7 @@ function ProtectedRoutes() {
         <Route path="/map" element={<LiveMap />} />
         <Route path="/report" element={<ReportCrime />} />
         <Route path="/analytics" element={<Analytics />} />
+        <Route path="/predictions" element={<Predictions />} />
         <Route path="/patrols" element={<Patrols />} />
         <Route path="/settings" element={<Settings />} />
       </Route>
