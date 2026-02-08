@@ -129,10 +129,7 @@ See [ml_engine/README.md](ml_engine/README.md) for detailed documentation.
 
 ---
 
-## 📄 License
-
-This project is proprietary software. All rights reserved.
-
+ 
 ---
 
 <div align="center">
